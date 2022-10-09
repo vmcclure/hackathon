@@ -20,10 +20,17 @@ class NewsViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
     def get_queryset(self):
         query_params = self.request.query_params
         role = query_params.get('role')
+        start_date = query_params.get('start_date')
+        end_date = query_params.get('end_date')
         if role:
             role_id = UserRole.objects.filter(role=role).first()
             rt = RoleTag.objects.filter(role=role_id).values_list('tag', flat=True)
-            qs = News.objects.filter(tag__id__in=rt).order_by('-weight_tag')
+            if start_date and end_date:
+                start_date = datetime.datetime.strptime(start_date, "%d%m%Y").date()
+                end_date = datetime.datetime.strptime(end_date, "%d%m%Y").date()
+                qs = News.objects.filter(tag__id__in=rt, news_date__range=[start_date, end_date]).order_by('-weight_tag')
+            else:
+                qs = News.objects.filter(tag__id__in=rt).order_by('-weight_tag')
             return qs
         return super().get_queryset()
 
