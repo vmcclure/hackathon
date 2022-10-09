@@ -8,7 +8,6 @@ embedder = SentenceTransformer('all-mpnet-base-v2')
 
 
 def check_news(new_body, new_header, records):
-    return True
     new_text_sum = model(new_body, num_sentences=4)
     news_text_all = embedder.encode(new_header, convert_to_tensor=True) + \
                     embedder.encode(new_body, convert_to_tensor=True) + \
