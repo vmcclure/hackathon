@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  api:
+    build: API/.
+    restart: always
+    ports:
+      - "8001:8000"
+  parser:
+    build: rss_parser/.
+    restart: always
+    environment:
+      MQ_HOST: rabbit
+      MQ_PORT: 5672
+      MQ_USER: guest
+      MQ_PASSWORD: guest
+    depends_on:
+      - postgres
+      - rabbit
+  rss:
+    build: rss/.
+    restart: always
+    environment:
+      MQ_HOST: rabbit
+      MQ_PORT: 5672
+      MQ_USER: guest
+      MQ_PASSWORD: guest
+    depends_on:
+      - postgres
+      - rabbit
+  postgres:
+    image: postgres:latest
+    environment:
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "postgres"
+        POSTGRES_DB: "news"
+    ports:
+        - "5435:5432"
+  rabbit:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"

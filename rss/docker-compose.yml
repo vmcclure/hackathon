@@ -1,0 +1,45 @@
+version: '3'
+services:
+  listener:
+    build: rss/.
+    restart: always
+    environment:
+      MQ_HOST: rabbit
+      MQ_PORT: 5672
+      MQ_USER: guest
+      MQ_PASSWORD: guest
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_USER: ""
+      MONGO_PASSWORD: ""
+      MONGO_DB: rss
+  parser:
+    build: rss_parser/.
+    restart: always
+    environment:
+      MQ_HOST: rabbit
+      MQ_PORT: 5672
+      MQ_USER: guest
+      MQ_PASSWORD: guest
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_USER: ""
+      MONGO_PASSWORD: ""
+      MONGO_DB: rss
+  rabbit:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/mnesia/
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+volumes:
+  rabbitmq_data:
+    driver: local
+  mongo_data:
+    driver: local
