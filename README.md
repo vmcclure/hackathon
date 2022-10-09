@@ -9,7 +9,7 @@
 получение списко новостей - `curl --location --request GET 'http://localhost:8001/news'`
 доступные query_params - `limit`, `offset`
 ######
-топ 3 новости для роли `curl --location --request GET '127.0.0.1:8001/news/?role=buhgalter&limit=3`
+топ 3 новости для роли `curl --location --request GET '127.0.0.1:8001/news/?role=buhgalter&limit=3'`
 доступные query_params `start_date`, `end_date`, `role`
 доступные роли `buhgalter`, `it_director`
 добавление новых ролей и тегов возможно через инсерт в бд
