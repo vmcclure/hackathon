@@ -4,7 +4,7 @@ from rest_framework import views, mixins, viewsets, serializers, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from bertopic import BERTopic
-from API.models import News, NewsAll, RoleTag, Tags, UserRole
+from API.models import News, NewsAll, RoleTag, Tags, UserRole, TagNews
 
 
 class NewsSerializer(serializers.ModelSerializer):
@@ -26,6 +26,18 @@ class NewsViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gen
             qs = News.objects.filter(tag__id__in=rt).order_by('-weight_tag')
             return qs
         return super().get_queryset()
+
+    @action(detail=True, methods=["get"])
+    def tags_area(self, request, pk=None):
+        news = News.objects.filter(id=pk).first()
+        tags = TagNews.objects.filter(news=news)
+        resp = []
+        for t in tags:
+            resp.append({
+                'obj': t.object,
+                'type': t.type
+            })
+        return Response(resp)
 
 
 def clusters_of_news(docs):

@@ -44,6 +44,15 @@ class News(models.Model):
         managed = False
         db_table = 'public"."news'
 
+class TagNews(models.Model):
+    id = models.IntegerField(primary_key=True)
+    news = models.ForeignKey(News, on_delete=models.CASCADE, db_column='news')
+    object = models.TextField()
+    type = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'public"."news_tag'
 
 class NewsAll(models.Model):
     body = models.TextField()
